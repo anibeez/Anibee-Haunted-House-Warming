@@ -1,6 +1,6 @@
 const CONFIG = {
   API_BASE_URL: "",
-  VENMO_USERNAME: "USERNAME",
+  VENMO_USERNAME: "Anibee-Zingalis",
   DEFAULT_FUNDS: [
     {
       fund_id: "stairs",
