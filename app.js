@@ -29,119 +29,115 @@ const CONFIG = {
 const fundsGrid = document.querySelector("#funds-grid");
 const template = document.querySelector("#fund-card-template");
 
-if (!fundsGrid || !template) {
-  // Only run on the gift registry page.
-} else {
-  const formatCurrency = (value) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(value);
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
 
-  const buildVenmoUrl = (fundName, amount) => {
-    const note = `Housewarming - ${fundName.toUpperCase()}`;
-    const params = new URLSearchParams({
-      txn: "pay",
-      amount: amount.toString(),
-      note,
-    });
+const buildVenmoUrl = (fundName, amount) => {
+  const note = `Housewarming - ${fundName.toUpperCase()}`;
+  const params = new URLSearchParams({
+    txn: "pay",
+    amount: amount.toString(),
+    note,
+  });
 
-    return `https://venmo.com/${CONFIG.VENMO_USERNAME}?${params.toString()}`;
-  };
+  return `https://venmo.com/${CONFIG.VENMO_USERNAME}?${params.toString()}`;
+};
 
-  const updateProgress = (card, fund) => {
-    const percent = Math.min(100, Math.round((fund.current / fund.goal) * 100));
-    const progressBar = card.querySelector(".card__progress-bar");
-    progressBar.style.setProperty("--progress", `${percent}%`);
-    progressBar.setAttribute("aria-valuenow", percent.toString());
-    progressBar.setAttribute("aria-valuemax", fund.goal.toString());
-    progressBar.setAttribute("aria-valuetext", `${percent}% funded`);
+const updateProgress = (card, fund) => {
+  const percent = Math.min(100, Math.round((fund.current / fund.goal) * 100));
+  const progressBar = card.querySelector(".card__progress-bar");
+  progressBar.style.setProperty("--progress", `${percent}%`);
+  progressBar.setAttribute("aria-valuenow", percent.toString());
+  progressBar.setAttribute("aria-valuemax", fund.goal.toString());
+  progressBar.setAttribute("aria-valuetext", `${percent}% funded`);
 
-    card.querySelector(
-      ".card__progress-amount"
-    ).textContent = `${formatCurrency(fund.current)} pledged`;
-    card.querySelector(
-      ".card__progress-goal"
-    ).textContent = `${formatCurrency(fund.goal)} goal`;
-  };
+  card.querySelector(
+    ".card__progress-amount"
+  ).textContent = `${formatCurrency(fund.current)} pledged`;
+  card.querySelector(
+    ".card__progress-goal"
+  ).textContent = `${formatCurrency(fund.goal)} goal`;
+};
 
-  const renderFund = (fund) => {
-    const card = template.content.cloneNode(true);
-    const cardRoot = card.querySelector(".card");
-    card.querySelector(".card__title").textContent = fund.name;
-    card.querySelector(".card__description").textContent = fund.description;
+const renderFund = (fund) => {
+  const card = template.content.cloneNode(true);
+  const cardRoot = card.querySelector(".card");
+  card.querySelector(".card__title").textContent = fund.name;
+  card.querySelector(".card__description").textContent = fund.description;
 
-    const form = card.querySelector(".card__form");
-    const status = card.querySelector(".card__status");
+  const form = card.querySelector(".card__form");
+  const status = card.querySelector(".card__status");
 
-    updateProgress(cardRoot, fund);
+  updateProgress(cardRoot, fund);
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      status.textContent = "";
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    status.textContent = "";
 
-      const formData = new FormData(form);
-      const amount = Number(formData.get("amount"));
-      const name = formData.get("name").toString().trim();
-      const message = formData.get("message").toString().trim();
+    const formData = new FormData(form);
+    const amount = Number(formData.get("amount"));
+    const name = formData.get("name").toString().trim();
+    const message = formData.get("message").toString().trim();
 
-      if (!amount || amount <= 0) {
-        status.textContent = "Please enter a valid amount.";
-        return;
-      }
-
-      const payload = {
-        fund_id: fund.fund_id,
-        amount,
-        name: name || undefined,
-        message: message || undefined,
-      };
-
-      try {
-        if (CONFIG.API_BASE_URL) {
-          const response = await fetch(`${CONFIG.API_BASE_URL}/pledge`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          if (!response.ok) {
-            throw new Error("Unable to record pledge.");
-          }
-
-          const data = await response.json();
-          window.location.href = data.redirect_url;
-          return;
-        }
-
-        const venmoUrl = buildVenmoUrl(fund.name, amount);
-        fund.current += amount;
-        updateProgress(cardRoot, fund);
-        status.textContent = "Redirecting you to Venmo...";
-        window.location.href = venmoUrl;
-      } catch (error) {
-        status.textContent = "We couldn't connect right now. Please try again.";
-      }
-    });
-
-    fundsGrid.appendChild(card);
-  };
-
-  const loadFunds = async () => {
-    if (!CONFIG.API_BASE_URL) {
-      CONFIG.DEFAULT_FUNDS.forEach(renderFund);
+    if (!amount || amount <= 0) {
+      status.textContent = "Please enter a valid amount.";
       return;
     }
 
-    try {
-      const response = await fetch(`${CONFIG.API_BASE_URL}/funds`);
-      const data = await response.json();
-      data.forEach(renderFund);
-    } catch (error) {
-      CONFIG.DEFAULT_FUNDS.forEach(renderFund);
-    }
-  };
+    const payload = {
+      fund_id: fund.fund_id,
+      amount,
+      name: name || undefined,
+      message: message || undefined,
+    };
 
-  loadFunds();
-}
+    try {
+      if (CONFIG.API_BASE_URL) {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/pledge`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error("Unable to record pledge.");
+        }
+
+        const data = await response.json();
+        window.location.href = data.redirect_url;
+        return;
+      }
+
+      const venmoUrl = buildVenmoUrl(fund.name, amount);
+      fund.current += amount;
+      updateProgress(cardRoot, fund);
+      status.textContent = "Redirecting you to Venmo...";
+      window.location.href = venmoUrl;
+    } catch (error) {
+      status.textContent = "We couldn't connect right now. Please try again.";
+    }
+  });
+
+  fundsGrid.appendChild(card);
+};
+
+const loadFunds = async () => {
+  if (!CONFIG.API_BASE_URL) {
+    CONFIG.DEFAULT_FUNDS.forEach(renderFund);
+    return;
+  }
+
+  try {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/funds`);
+    const data = await response.json();
+    data.forEach(renderFund);
+  } catch (error) {
+    CONFIG.DEFAULT_FUNDS.forEach(renderFund);
+  }
+};
+
+loadFunds();
