@@ -3,27 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gift Registry | Anna Haunted House Warming</title>
+    <title>Gift Registry | Haunted Housewarming</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="page">
       <nav class="page-nav">
-        <div class="page-nav__logo">Anna Haunted House Warming</div>
+        <div class="page-nav__logo">Haunted Housewarming</div>
         <div class="page-nav__links">
-          <a href="index.html">Landing Page</a>
+          <a href="index.html">Home</a>
+          <a href="gift-registry.html">Gift Registry</a>
           <a href="photo-gallery.html">Photo Gallery</a>
-          <a href="message-board.html">Message Board</a>
+          <a href="message-board.html">Guestbook</a>
         </div>
       </nav>
 
       <header class="hero">
         <span class="hero__icon" aria-hidden="true">🎀</span>
         <p class="hero__eyebrow">Gift Registry</p>
-        <h1>Help us add magical touches to the haunted house.</h1>
+        <h1>Offerings for the Haunted Home</h1>
         <p class="hero__subhead">
           Pick a project, choose an amount, and we’ll send you to Venmo to complete your gift.
-          Each pledge helps us reach our goals faster.
+          Totals update when you tell the site how much you sent.
         </p>
         <a class="text-link" href="index.html">← Back to the invite</a>
       </header>
@@ -31,7 +32,7 @@
       <section class="funds" aria-live="polite">
         <div class="funds__header">
           <h2>Current projects</h2>
-          <p>Progress updates reflect pledges and may be adjusted after Venmo reconciliation.</p>
+          <p>Totals reflect pledged amounts and may be adjusted after Venmo reconciliation.</p>
         </div>
         <div id="funds-grid" class="funds__grid"></div>
       </section>
@@ -45,21 +46,22 @@
         </ol>
       </section>
     </main>
+    <footer class="page-footer">
+      <p>Thank you for helping us make the haunted housewarming feel like home.</p>
+    </footer>
 
     <template id="fund-card-template">
-      <article class="card">
+      <article class="card gift-card">
+        <img class="gift-card__image" alt="" />
         <header class="card__header">
           <h3 class="card__title"></h3>
           <p class="card__description"></p>
         </header>
-        <div class="card__progress">
-          <div class="card__progress-bar" role="progressbar" aria-valuemin="0"></div>
-          <div class="card__progress-meta">
-            <span class="card__progress-amount"></span>
-            <span class="card__progress-goal"></span>
-          </div>
+        <div class="gift-card__body">
+          <p class="gift-card__total"></p>
         </div>
-        <form class="card__form" novalidate>
+        <button class="gift-card__toggle" type="button">Contribute on Venmo</button>
+        <form class="card__form gift-card__form" novalidate>
           <label>
             Amount
             <div class="input-group">
@@ -72,10 +74,10 @@
             <input type="text" name="name" placeholder="Your name" />
           </label>
           <label>
-            Message (optional)
+            Note (optional)
             <textarea name="message" rows="2" placeholder="Congrats!"></textarea>
           </label>
-          <button type="submit">Contribute via Venmo</button>
+          <button type="submit">Continue to Venmo</button>
           <p class="card__status" role="status" aria-live="polite"></p>
         </form>
       </article>

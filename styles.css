@@ -34,7 +34,7 @@ a {
 .page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 40px 24px 80px;
+  padding: 40px 24px 40px;
   display: grid;
   gap: 36px;
   position: relative;
@@ -46,6 +46,14 @@ a {
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+  position: sticky;
+  top: 16px;
+  z-index: 10;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(255, 246, 251, 0.9);
+  box-shadow: 0 16px 30px rgba(120, 52, 88, 0.12);
+  backdrop-filter: blur(12px);
 }
 
 .page-nav__logo {
@@ -151,7 +159,7 @@ a {
   box-shadow: 0 18px 40px rgba(120, 52, 88, 0.18);
 }
 
-.hero__art svg {
+.hero__art img {
   width: min(100%, 320px);
   height: auto;
 }
@@ -259,39 +267,38 @@ a {
   color: #6b3a5a;
 }
 
-.card__progress {
-  display: grid;
-  gap: 12px;
+.gift-card__image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 18px;
+  background: #fff6fb;
+  padding: 16px;
+  border: 1px solid rgba(255, 190, 216, 0.6);
 }
 
-.card__progress-bar {
-  height: 10px;
-  border-radius: 999px;
-  background: #ffe3ef;
-  position: relative;
-  overflow: hidden;
+.gift-card__total {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--plum);
+  margin: 0;
 }
 
-.card__progress-bar::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: var(--progress, 0%);
-  background: linear-gradient(120deg, var(--pink), var(--peach));
-  border-radius: inherit;
-  transition: width 0.3s ease;
-}
-
-.card__progress-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.95rem;
-  color: #5f2b4a;
+.gift-card__toggle {
+  width: 100%;
 }
 
 .card__form {
   display: grid;
   gap: 12px;
+}
+
+.gift-card__form {
+  display: none;
+}
+
+.gift-card__form--active {
+  display: grid;
 }
 
 .card__form label {
@@ -408,44 +415,41 @@ button:hover {
   color: #6b3a5a;
 }
 
-.nav-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+.countdown__status {
+  margin: 12px 0 0;
+  font-weight: 600;
+  color: var(--berry);
 }
 
-.nav-card {
-  background: white;
-  border-radius: 22px;
-  padding: 24px;
-  text-decoration: none;
-  color: inherit;
-  box-shadow: 0 16px 34px rgba(120, 52, 88, 0.12);
-  border: 1px solid rgba(255, 188, 217, 0.6);
+.cta-row {
   display: grid;
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  align-items: center;
+  justify-items: center;
+}
+
+.icon-link {
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 32px;
+  background: white;
+  border: 1px solid rgba(255, 190, 216, 0.6);
+  box-shadow: 0 18px 36px rgba(120, 52, 88, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.nav-card__icon {
-  font-size: 1.6rem;
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 226, 242, 0.6);
-  border-radius: 14px;
-  box-shadow: 0 10px 22px rgba(120, 52, 88, 0.15);
+.icon-link img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
 }
 
-.nav-card:hover {
+.icon-link:hover {
   transform: translateY(-3px);
-  box-shadow: 0 22px 40px rgba(120, 52, 88, 0.18);
-}
-
-.nav-card__cta {
-  font-weight: 700;
-  color: var(--berry);
+  box-shadow: 0 22px 40px rgba(120, 52, 88, 0.22);
 }
 
 .details {
@@ -476,18 +480,156 @@ button:hover {
   margin-bottom: 8px;
 }
 
-.placeholder {
+.gallery {
   display: grid;
-  place-items: center;
+  gap: 24px;
 }
 
-.placeholder__card {
+.gallery__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filter-button {
+  border: 1px solid rgba(255, 190, 216, 0.8);
+  background: white;
+  color: var(--berry);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-button--active {
+  background: linear-gradient(120deg, var(--pink), var(--peach));
+  color: white;
+  border-color: transparent;
+}
+
+.gallery__grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.gallery__empty {
+  margin: 0;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: white;
+  border: 1px dashed rgba(255, 190, 216, 0.8);
+  color: #6b3a5a;
+  font-weight: 600;
+}
+
+.gallery-card {
+  border: none;
   background: white;
   border-radius: 22px;
-  padding: 32px;
-  text-align: center;
-  box-shadow: 0 16px 40px rgba(120, 52, 88, 0.12);
+  padding: 16px;
+  text-align: left;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 16px 30px rgba(120, 52, 88, 0.14);
+  cursor: pointer;
+}
+
+.gallery-card img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  background: #fff6fb;
+  padding: 12px;
+}
+
+.gallery-card span {
+  font-size: 0.95rem;
+  color: #5f2b4a;
+}
+
+.lightbox {
+  border: none;
+  border-radius: 22px;
+  padding: 24px;
+  max-width: 520px;
+  width: 90%;
+  box-shadow: 0 24px 60px rgba(60, 15, 40, 0.4);
+  display: grid;
+  gap: 12px;
+}
+
+.lightbox::backdrop {
+  background: rgba(24, 10, 20, 0.6);
+}
+
+.lightbox img {
+  width: 100%;
+  border-radius: 18px;
+  background: #fff6fb;
+  padding: 12px;
+}
+
+.lightbox__close {
+  align-self: flex-end;
+  margin-left: auto;
+  background: transparent;
+  color: var(--plum);
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  box-shadow: none;
+}
+
+.guestbook {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.guestbook__form h2,
+.guestbook__feed h2 {
+  margin-top: 0;
+}
+
+.guestbook__entries {
+  display: grid;
+  gap: 20px;
+}
+
+.message-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.message-card__name {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.message-card__date {
+  font-size: 0.85rem;
+  color: #8a4b70;
+}
+
+.message-card__message {
+  margin: 0;
+  color: #5f2b4a;
+}
+
+.message-card__image {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
   border: 1px solid rgba(255, 190, 216, 0.6);
+}
+
+.page-footer {
+  text-align: center;
+  padding: 24px 16px 48px;
+  color: #7a3b61;
+  font-weight: 600;
 }
 
 @media (max-width: 640px) {

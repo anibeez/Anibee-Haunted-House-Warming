@@ -4,24 +4,31 @@ const CONFIG = {
   DEFAULT_FUNDS: [
     {
       fund_id: "stairs",
-      name: "Back Steps",
+      name: "Back Stairs",
       description: "Safe, sturdy steps for the patio entrance.",
-      goal: 1500,
       current: 825,
+      image: "src/media/images/gift_stair.png",
+    },
+    {
+      fund_id: "snowblower",
+      name: "Snow Blower",
+      description: "Clear the driveway when the winter ghosts roll in.",
+      current: 190,
+      image: "src/media/images/gift_snowblower.png",
+    },
+    {
+      fund_id: "outlets",
+      name: "Basement Outlets",
+      description: "Extra outlets for cozy movie nights downstairs.",
+      current: 140,
+      image: "src/media/images/gift_outlets.png",
     },
     {
       fund_id: "mower",
       name: "Lawn Mower",
       description: "Keep the yard tidy all season long.",
-      goal: 700,
       current: 300,
-    },
-    {
-      fund_id: "paint",
-      name: "Living Room Paint",
-      description: "Warm, cozy color for our main gathering space.",
-      goal: 450,
-      current: 120,
+      image: "src/media/images/gift_lawnmower.png",
     },
   ],
 };
@@ -47,20 +54,9 @@ const buildVenmoUrl = (fundName, amount) => {
   return `https://venmo.com/${CONFIG.VENMO_USERNAME}?${params.toString()}`;
 };
 
-const updateProgress = (card, fund) => {
-  const percent = Math.min(100, Math.round((fund.current / fund.goal) * 100));
-  const progressBar = card.querySelector(".card__progress-bar");
-  progressBar.style.setProperty("--progress", `${percent}%`);
-  progressBar.setAttribute("aria-valuenow", percent.toString());
-  progressBar.setAttribute("aria-valuemax", fund.goal.toString());
-  progressBar.setAttribute("aria-valuetext", `${percent}% funded`);
-
-  card.querySelector(
-    ".card__progress-amount"
-  ).textContent = `${formatCurrency(fund.current)} pledged`;
-  card.querySelector(
-    ".card__progress-goal"
-  ).textContent = `${formatCurrency(fund.goal)} goal`;
+const updateTotal = (card, fund) => {
+  const total = card.querySelector(".gift-card__total");
+  total.textContent = `Total gifted: ${formatCurrency(fund.current)}`;
 };
 
 const renderFund = (fund) => {
@@ -71,8 +67,21 @@ const renderFund = (fund) => {
 
   const form = card.querySelector(".card__form");
   const status = card.querySelector(".card__status");
+  const toggle = card.querySelector(".gift-card__toggle");
+  const image = card.querySelector(".gift-card__image");
 
-  updateProgress(cardRoot, fund);
+  updateTotal(cardRoot, fund);
+
+  if (fund.image) {
+    image.src = fund.image;
+    image.alt = `${fund.name} illustration`;
+  } else {
+    image.remove();
+  }
+
+  toggle.addEventListener("click", () => {
+    form.classList.toggle("gift-card__form--active");
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -114,7 +123,7 @@ const renderFund = (fund) => {
 
       const venmoUrl = buildVenmoUrl(fund.name, amount);
       fund.current += amount;
-      updateProgress(cardRoot, fund);
+      updateTotal(cardRoot, fund);
       status.textContent = "Redirecting you to Venmo...";
       window.location.href = venmoUrl;
     } catch (error) {
