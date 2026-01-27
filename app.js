@@ -10,13 +10,6 @@ const CONFIG = {
       image: "src/media/images/gift_stair.png",
     },
     {
-      fund_id: "mower",
-      name: "Lawn Mower",
-      description: "Keep the yard tidy all season long.",
-      current: 300,
-      image: "src/media/images/gift_lawnmower.png",
-    },
-    {
       fund_id: "snowblower",
       name: "Snow Blower",
       description: "Clear the driveway when the winter ghosts roll in.",
@@ -31,11 +24,11 @@ const CONFIG = {
       image: "src/media/images/gift_outlets.png",
     },
     {
-      fund_id: "paint",
-      name: "Basement Paint",
-      description: "A fresh coat for our spooky basement glow-up.",
-      current: 75,
-      image: "src/media/images/gift_icon.png",
+      fund_id: "mower",
+      name: "Lawn Mower",
+      description: "Keep the yard tidy all season long.",
+      current: 300,
+      image: "src/media/images/gift_lawnmower.png",
     },
   ],
 };

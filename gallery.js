@@ -6,14 +6,9 @@ const lightbox = document.querySelector("#lightbox");
 const lightboxImage = document.querySelector("#lightbox-image");
 const lightboxCaption = document.querySelector("#lightbox-caption");
 const lightboxClose = document.querySelector(".lightbox__close");
+const galleryEmpty = document.querySelector("#gallery-empty");
 
-const fallbackImages = [
-  {
-    src: "src/media/images/homepage_banner.png",
-    caption: "First look at the haunted housewarming vibes.",
-    tags: ["party"],
-  },
-];
+const fallbackImages = [];
 
 let allImages = [];
 let activeFilter = "all";
@@ -64,6 +59,10 @@ const renderGallery = () => {
     }
     return image.tags?.includes(activeFilter);
   });
+
+  if (galleryEmpty) {
+    galleryEmpty.hidden = images.length > 0;
+  }
 
   images.forEach((image) => {
     const card = document.createElement("button");
