@@ -3,73 +3,164 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Housewarming Funds</title>
+    <title>Anna Haunted House Warming</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="page">
-      <header class="hero">
-        <p class="hero__eyebrow">Housewarming Funds</p>
-        <h1>Help us finish the home, one project at a time.</h1>
-        <p class="hero__subhead">
-          Pick a project, choose an amount, and we’ll send you to Venmo to complete your
-          gift. Each pledge helps us reach our goals faster.
-        </p>
+      <nav class="page-nav">
+        <div class="page-nav__logo">Anna Haunted House Warming</div>
+        <div class="page-nav__links">
+          <a href="gift-registry.html">Gift Registry</a>
+          <a href="photo-gallery.html">Photo Gallery</a>
+          <a href="message-board.html">Message Board</a>
+        </div>
+      </nav>
+
+      <header class="hero hero--landing">
+        <div class="hero__content">
+          <p class="hero__eyebrow">Welcome, sweet spirits</p>
+          <h1>You're invited to Anna's Haunted House Warming.</h1>
+          <p class="hero__subhead">
+            Join us for a cozy, candy-colored night of friendly ghosts, warm cider, and
+            autumn sparkle as we celebrate the new home.
+          </p>
+          <div class="hero__actions">
+            <a class="primary-link" href="gift-registry.html">Browse the registry</a>
+            <a class="text-link" href="#details">See the party details</a>
+          </div>
+        </div>
+        <div class="hero__art" aria-hidden="true">
+          <svg viewBox="0 0 320 280" role="img">
+            <defs>
+              <linearGradient id="houseGlow" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ffb58f" />
+                <stop offset="100%" stop-color="#ff8fba" />
+              </linearGradient>
+              <linearGradient id="roofGlow" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#4a1f3d" />
+                <stop offset="100%" stop-color="#7a2d5e" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M30 210c40-60 220-60 260 0v40H30z"
+              fill="#ffe2f2"
+            />
+            <path
+              d="M70 200v-70l90-60 90 60v70z"
+              fill="url(#houseGlow)"
+            />
+            <path d="M60 140l100-80 100 80v20H60z" fill="url(#roofGlow)" />
+            <rect x="130" y="150" width="60" height="60" rx="16" fill="#fff7f4" />
+            <circle cx="150" cy="175" r="6" fill="#ff8fba" />
+            <rect x="95" y="155" width="35" height="35" rx="10" fill="#fff7f4" />
+            <rect x="195" y="155" width="35" height="35" rx="10" fill="#fff7f4" />
+            <path
+              d="M40 110c0-18 14-30 30-30s30 12 30 30c0 20-12 26-12 40H52c0-14-12-20-12-40z"
+              fill="#fff7f4"
+            />
+            <circle cx="58" cy="110" r="6" fill="#7a2d5e" />
+            <circle cx="78" cy="110" r="6" fill="#7a2d5e" />
+            <path
+              d="M240 110c0-18 14-30 30-30s30 12 30 30c0 20-12 26-12 40h-36c0-14-12-20-12-40z"
+              fill="#fff7f4"
+            />
+            <circle cx="258" cy="110" r="6" fill="#7a2d5e" />
+            <circle cx="278" cy="110" r="6" fill="#7a2d5e" />
+            <path
+              d="M155 40c0-12 10-20 20-20s20 8 20 20c0 14-8 18-8 28h-24c0-10-8-14-8-28z"
+              fill="#fff7f4"
+            />
+            <circle cx="170" cy="42" r="4" fill="#7a2d5e" />
+            <circle cx="182" cy="42" r="4" fill="#7a2d5e" />
+          </svg>
+        </div>
+        <div class="event-card">
+          <h2>Party Details</h2>
+          <ul class="event-card__list">
+            <li>
+              <span>Date</span>
+              <strong>October 24</strong>
+            </li>
+            <li>
+              <span>Time</span>
+              <strong>2:00 PM</strong>
+            </li>
+            <li>
+              <span>Location</span>
+              <strong>545 Cedarwood Trail, Elyria, OH 44035</strong>
+            </li>
+          </ul>
+        </div>
       </header>
 
-      <section class="funds" aria-live="polite">
-        <div class="funds__header">
-          <h2>Current projects</h2>
-          <p>Progress updates reflect pledges and may be adjusted after Venmo reconciliation.</p>
+      <section class="countdown" aria-label="Countdown to the party">
+        <h2>Countdown to the pink pumpkin party</h2>
+        <div class="countdown__grid">
+          <div class="countdown__item">
+            <span id="countdown-days" class="countdown__value">0</span>
+            <span class="countdown__label">Days</span>
+          </div>
+          <div class="countdown__item">
+            <span id="countdown-hours" class="countdown__value">00</span>
+            <span class="countdown__label">Hours</span>
+          </div>
+          <div class="countdown__item">
+            <span id="countdown-minutes" class="countdown__value">00</span>
+            <span class="countdown__label">Minutes</span>
+          </div>
         </div>
-        <div id="funds-grid" class="funds__grid"></div>
+        <p class="countdown__note">
+          Bring your cutest costume vibes, sparkly accessories, and a warm hug for the hosts.
+        </p>
       </section>
 
-      <section class="info">
-        <h2>How it works</h2>
-        <ol class="info__list">
-          <li>Select a project and enter your pledge amount.</li>
-          <li>We’ll generate a Venmo payment link with the project noted.</li>
-          <li>Totals update based on pledges; we reconcile after the event.</li>
-        </ol>
+      <section class="nav-cards" aria-label="Explore the party pages">
+        <a class="nav-card" href="gift-registry.html">
+          <span class="nav-card__icon" aria-hidden="true">🎁</span>
+          <h3>Gift Registry</h3>
+          <p>See the haunted housewarming wish list and contribute to a project.</p>
+          <span class="nav-card__cta">Shop the registry →</span>
+        </a>
+        <a class="nav-card" href="photo-gallery.html">
+          <span class="nav-card__icon" aria-hidden="true">📸</span>
+          <h3>Photo Gallery</h3>
+          <p>Peek at the party memories once the ghosts go home.</p>
+          <span class="nav-card__cta">View the gallery →</span>
+        </a>
+        <a class="nav-card" href="message-board.html">
+          <span class="nav-card__icon" aria-hidden="true">💌</span>
+          <h3>Message Board</h3>
+          <p>Leave a sweet or spooky note for the new house.</p>
+          <span class="nav-card__cta">Sign the guestbook →</span>
+        </a>
+      </section>
+
+      <section class="details" id="details">
+        <div>
+          <h2>Plan your visit</h2>
+          <p>
+            Expect pastel pumpkins, soft lighting, and a haunted house that feels more cozy
+            than creepy. Come as you are—or bring your best friendly ghost look.
+          </p>
+        </div>
+        <div class="details__list">
+          <div class="details__item">
+            <h3>Arrival</h3>
+            <p>Drop in at 2 PM for cider, sweet treats, and a tour of the house.</p>
+          </div>
+          <div class="details__item">
+            <h3>Parking</h3>
+            <p>Plenty of street parking is available along Cedarwood Trail.</p>
+          </div>
+          <div class="details__item">
+            <h3>Dress code</h3>
+            <p>Cozy layers, playful costumes, or chic black-and-pink looks welcome.</p>
+          </div>
+        </div>
       </section>
     </main>
 
-    <template id="fund-card-template">
-      <article class="card">
-        <header class="card__header">
-          <h3 class="card__title"></h3>
-          <p class="card__description"></p>
-        </header>
-        <div class="card__progress">
-          <div class="card__progress-bar" role="progressbar" aria-valuemin="0"></div>
-          <div class="card__progress-meta">
-            <span class="card__progress-amount"></span>
-            <span class="card__progress-goal"></span>
-          </div>
-        </div>
-        <form class="card__form" novalidate>
-          <label>
-            Amount
-            <div class="input-group">
-              <span>$</span>
-              <input type="number" min="1" step="1" name="amount" required />
-            </div>
-          </label>
-          <label>
-            Name (optional)
-            <input type="text" name="name" placeholder="Your name" />
-          </label>
-          <label>
-            Message (optional)
-            <textarea name="message" rows="2" placeholder="Congrats!"></textarea>
-          </label>
-          <button type="submit">Contribute via Venmo</button>
-          <p class="card__status" role="status" aria-live="polite"></p>
-        </form>
-      </article>
-    </template>
-
-    <script src="app.js"></script>
+    <script src="countdown.js"></script>
   </body>
 </html>
