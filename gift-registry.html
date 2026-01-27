@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gift Registry | Anna Haunted House Warming</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="hero__eyebrow">Gift Registry</p>
+        <h1>Help us finish the home, one project at a time.</h1>
+        <p class="hero__subhead">
+          Pick a project, choose an amount, and we’ll send you to Venmo to complete your gift.
+          Each pledge helps us reach our goals faster.
+        </p>
+        <a class="text-link" href="index.html">← Back to the invite</a>
+      </header>
+
+      <section class="funds" aria-live="polite">
+        <div class="funds__header">
+          <h2>Current projects</h2>
+          <p>Progress updates reflect pledges and may be adjusted after Venmo reconciliation.</p>
+        </div>
+        <div id="funds-grid" class="funds__grid"></div>
+      </section>
+
+      <section class="info">
+        <h2>How it works</h2>
+        <ol class="info__list">
+          <li>Select a project and enter your pledge amount.</li>
+          <li>We’ll generate a Venmo payment link with the project noted.</li>
+          <li>Totals update based on pledges; we reconcile after the event.</li>
+        </ol>
+      </section>
+    </main>
+
+    <template id="fund-card-template">
+      <article class="card">
+        <header class="card__header">
+          <h3 class="card__title"></h3>
+          <p class="card__description"></p>
+        </header>
+        <div class="card__progress">
+          <div class="card__progress-bar" role="progressbar" aria-valuemin="0"></div>
+          <div class="card__progress-meta">
+            <span class="card__progress-amount"></span>
+            <span class="card__progress-goal"></span>
+          </div>
+        </div>
+        <form class="card__form" novalidate>
+          <label>
+            Amount
+            <div class="input-group">
+              <span>$</span>
+              <input type="number" min="1" step="1" name="amount" required />
+            </div>
+          </label>
+          <label>
+            Name (optional)
+            <input type="text" name="name" placeholder="Your name" />
+          </label>
+          <label>
+            Message (optional)
+            <textarea name="message" rows="2" placeholder="Congrats!"></textarea>
+          </label>
+          <button type="submit">Contribute via Venmo</button>
+          <p class="card__status" role="status" aria-live="polite"></p>
+        </form>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
