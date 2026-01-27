@@ -1,0 +1,32 @@
+[
+  {
+    "src": "src/media/images/homepage_banner.png",
+    "caption": "First look at the haunted housewarming vibes.",
+    "tags": ["party"]
+  },
+  {
+    "src": "src/media/images/house_icon.png",
+    "caption": "Before: The house before the spooky touches.",
+    "tags": ["before"]
+  },
+  {
+    "src": "src/media/images/candles_icon.png",
+    "caption": "Renovations: Candlelit corners and cozy glow-ups.",
+    "tags": ["renovations"]
+  },
+  {
+    "src": "src/media/images/pumpkin_icon.png",
+    "caption": "Party night pumpkins waiting for guests.",
+    "tags": ["party"]
+  },
+  {
+    "src": "src/media/images/camera_icon.png",
+    "caption": "Renovations: Capturing progress along the way.",
+    "tags": ["renovations"]
+  },
+  {
+    "src": "src/media/images/gift_icon.png",
+    "caption": "Before: A peek at the wishlist ideas.",
+    "tags": ["before"]
+  }
+]
