@@ -22,7 +22,8 @@ body {
   background-image:
     radial-gradient(circle at top left, rgba(255, 222, 236, 0.7), transparent 55%),
     radial-gradient(circle at 20% 20%, rgba(255, 201, 167, 0.45), transparent 45%),
-    radial-gradient(circle at 80% 10%, rgba(255, 168, 202, 0.4), transparent 45%);
+    radial-gradient(circle at 80% 10%, rgba(255, 168, 202, 0.4), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(255, 200, 170, 0.5), transparent 50%);
   color: inherit;
 }
 
@@ -36,6 +37,7 @@ a {
   padding: 40px 24px 80px;
   display: grid;
   gap: 36px;
+  position: relative;
 }
 
 .page-nav {
@@ -60,7 +62,7 @@ a {
 
 .page-nav__links a {
   text-decoration: none;
-  background: var(--soft-lavender);
+  background: rgba(255, 226, 242, 0.8);
   color: var(--berry);
   padding: 8px 14px;
   border-radius: 999px;
@@ -68,6 +70,7 @@ a {
   font-weight: 600;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 8px 16px rgba(150, 69, 115, 0.16);
+  backdrop-filter: blur(10px);
 }
 
 .page-nav__links a:hover {
@@ -82,6 +85,7 @@ a {
   padding: 32px;
   border-radius: 28px;
   box-shadow: 0 24px 60px var(--shadow);
+  border: 1px solid rgba(255, 196, 220, 0.6);
 }
 
 .hero--landing {
@@ -93,6 +97,18 @@ a {
 .hero__content {
   display: grid;
   gap: 16px;
+}
+
+.hero__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 200, 217, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 10px 22px rgba(120, 52, 88, 0.16);
 }
 
 .hero__eyebrow {
@@ -125,6 +141,21 @@ a {
   align-items: center;
 }
 
+.hero__art {
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.9), rgba(255, 226, 242, 0.2));
+  border-radius: 24px;
+  border: 1px solid rgba(255, 190, 216, 0.6);
+  box-shadow: 0 18px 40px rgba(120, 52, 88, 0.18);
+}
+
+.hero__art svg {
+  width: min(100%, 320px);
+  height: auto;
+}
+
 .primary-link {
   text-decoration: none;
   background: linear-gradient(120deg, var(--pink), var(--peach));
@@ -147,6 +178,8 @@ a {
   border-radius: 22px;
   border: 2px dashed rgba(255, 166, 200, 0.5);
   box-shadow: 0 16px 40px rgba(147, 59, 104, 0.18);
+  position: relative;
+  overflow: hidden;
 }
 
 .event-card h2 {
@@ -154,6 +187,14 @@ a {
   margin-bottom: 16px;
   font-size: 1.3rem;
   color: var(--plum);
+}
+
+.event-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(255, 183, 214, 0.4), transparent 60%);
+  pointer-events: none;
 }
 
 .event-card__list {
@@ -205,6 +246,7 @@ a {
   display: grid;
   gap: 20px;
   box-shadow: 0 18px 40px rgba(120, 52, 88, 0.18);
+  border: 1px solid rgba(255, 190, 216, 0.6);
 }
 
 .card__title {
@@ -292,6 +334,7 @@ button {
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 12px 24px rgba(74, 31, 61, 0.3);
 }
 
 button:hover {
@@ -329,6 +372,7 @@ button:hover {
   padding: 28px;
   text-align: center;
   box-shadow: 0 16px 40px rgba(120, 52, 88, 0.12);
+  border: 1px solid rgba(255, 186, 213, 0.6);
 }
 
 .countdown__grid {
@@ -383,6 +427,17 @@ button:hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.nav-card__icon {
+  font-size: 1.6rem;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 226, 242, 0.6);
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(120, 52, 88, 0.15);
+}
+
 .nav-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 22px 40px rgba(120, 52, 88, 0.18);
@@ -401,6 +456,7 @@ button:hover {
   padding: 28px;
   border-radius: 24px;
   box-shadow: 0 16px 40px rgba(120, 52, 88, 0.12);
+  border: 1px solid rgba(255, 186, 213, 0.6);
 }
 
 .details__list {
@@ -431,6 +487,7 @@ button:hover {
   padding: 32px;
   text-align: center;
   box-shadow: 0 16px 40px rgba(120, 52, 88, 0.12);
+  border: 1px solid rgba(255, 190, 216, 0.6);
 }
 
 @media (max-width: 640px) {
