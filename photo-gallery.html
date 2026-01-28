@@ -29,6 +29,28 @@
       </header>
 
       <section class="gallery" aria-label="Photo gallery">
+        <form class="card gallery__upload" id="gallery-upload-form" novalidate>
+          <h2>Upload a Memory</h2>
+          <label>
+            Photo (jpg, png, webp up to 5MB)
+            <input type="file" name="image" accept="image/png,image/jpeg,image/webp" />
+          </label>
+          <label>
+            Caption (optional)
+            <input type="text" name="caption" placeholder="What’s happening here?" />
+          </label>
+          <label>
+            Category
+            <select name="tag">
+              <option value="">General</option>
+              <option value="before">Before</option>
+              <option value="renovations">Renovations</option>
+              <option value="party">Party Night</option>
+            </select>
+          </label>
+          <button type="submit">Upload Photo</button>
+          <p class="card__status" id="gallery-upload-status" role="status" aria-live="polite"></p>
+        </form>
         <div class="gallery__filters" role="group" aria-label="Gallery filters">
           <button class="filter-button filter-button--active" type="button" data-filter="all">
             All

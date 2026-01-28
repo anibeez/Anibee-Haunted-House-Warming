@@ -1,5 +1,5 @@
 const CONFIG = {
-  API_BASE_URL: "",
+  API_BASE_URL: "/api",
   VENMO_USERNAME: "Anibee-Zingalis",
   DEFAULT_FUNDS: [
     {
@@ -113,19 +113,34 @@ const renderFund = (fund) => {
 
     try {
       if (CONFIG.API_BASE_URL) {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/pledge`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+        try {
+          const response = await fetch(`${CONFIG.API_BASE_URL}/pledge`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
 
-        if (!response.ok) {
-          throw new Error("Unable to record pledge.");
+          if (!response.ok) {
+            throw new Error("Unable to record pledge.");
+          }
+
+          const data = await response.json();
+          if (data?.fund) {
+            fund.current = data.fund.current;
+            updateTotal(cardRoot, fund);
+          } else {
+            fund.current += amount;
+            updateTotal(cardRoot, fund);
+          }
+          status.textContent = "Redirecting you to Venmo...";
+          if (data?.redirect_url) {
+            window.location.href = data.redirect_url;
+            return;
+          }
+          return;
+        } catch (error) {
+          // Fall back to client-side behavior if the API is unavailable.
         }
-
-        const data = await response.json();
-        window.location.href = data.redirect_url;
-        return;
       }
 
       const venmoUrl = buildVenmoUrl(fund.name, amount);

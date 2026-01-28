@@ -1,5 +1,5 @@
 const CONFIG = {
-  API_BASE_URL: "",
+  API_BASE_URL: "/api",
   STORAGE_KEY: "haunted-guestbook-entries",
 };
 
@@ -40,8 +40,10 @@ const renderEntries = (entries) => {
     dateEl.textContent = formatDate(entry.created_at);
     messageEl.textContent = entry.message;
 
-    if (entry.image_url) {
-      console.log(entry.image_url)
+    const hasImage =
+      typeof entry.image_url === "string" && entry.image_url.trim() !== "";
+
+    if (hasImage) {
       imageEl.src = entry.image_url;
       imageEl.alt = entry.image_alt || "Guestbook upload";
     } else {
@@ -54,7 +56,7 @@ const renderEntries = (entries) => {
 
 const readImage = (file) =>
   new Promise((resolve, reject) => {
-    if (!file) {
+    if (!file || !file.size) {
       resolve(null);
       return;
     }
@@ -78,24 +80,28 @@ const fetchEntries = async () => {
 };
 
 const submitEntry = async (payload) => {
-  if (!CONFIG.API_BASE_URL) {
-    const entries = loadLocalEntries();
-    const updated = [payload, ...entries];
-    saveLocalEntries(updated);
-    return updated;
+  if (CONFIG.API_BASE_URL) {
+    try {
+      const response = await fetch(`${CONFIG.API_BASE_URL}/guestbook`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to submit guestbook entry.");
+      }
+
+      return response.json();
+    } catch (error) {
+      // Fall back to local storage when the API is unreachable.
+    }
   }
 
-  const response = await fetch(`${CONFIG.API_BASE_URL}/guestbook`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    throw new Error("Unable to submit guestbook entry.");
-  }
-
-  return response.json();
+  const entries = loadLocalEntries();
+  const updated = [payload, ...entries];
+  saveLocalEntries(updated);
+  return updated;
 };
 
 const initialize = async () => {
@@ -118,25 +124,26 @@ form?.addEventListener("submit", async (event) => {
   const name = formData.get("name").toString().trim();
   const message = formData.get("message").toString().trim();
   const imageFile = formData.get("image");
+  const hasImage = imageFile && imageFile.size > 0;
 
   if (!message) {
     statusEl.textContent = "Please add a message before submitting.";
     return;
   }
 
-  if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+  if (hasImage && imageFile.size > 5 * 1024 * 1024) {
     statusEl.textContent = "Please upload an image smaller than 5MB.";
     return;
   }
 
   try {
-    const imageUrl = imageFile ? await readImage(imageFile) : null;
+    const imageUrl = hasImage ? await readImage(imageFile) : null;
 
     const payload = {
       name: name || "",
       message,
       image_url: imageUrl,
-      image_alt: imageFile ? imageFile.name : "",
+      image_alt: hasImage ? imageFile.name : "",
       created_at: new Date().toISOString(),
     };
 
