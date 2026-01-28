@@ -6,30 +6,37 @@ const CONFIG = {
       fund_id: "stairs",
       name: "Back Stairs",
       description: "Safe, sturdy steps for the patio entrance.",
-      current: 825,
+      current: 0,
       image: "src/media/images/gift_stair.png",
     },
     {
       fund_id: "snowblower",
       name: "Snow Blower",
       description: "Clear the driveway when the winter ghosts roll in.",
-      current: 190,
+      current: 0,
       image: "src/media/images/gift_snowblower.png",
     },
     {
       fund_id: "outlets",
       name: "Basement Outlets",
       description: "Extra outlets for cozy movie nights downstairs.",
-      current: 140,
+      current: 0,
       image: "src/media/images/gift_outlets.png",
     },
     {
       fund_id: "mower",
       name: "Lawn Mower",
       description: "Keep the yard tidy all season long.",
-      current: 300,
+      current: 0,
       image: "src/media/images/gift_lawnmower.png",
     },
+    {
+      fund_id: "pets",
+      name: "General Pet Care",
+      description: "Feeding, Cleaning, and Homing the little beasts.",
+      current: 0,
+      image: "src/media/images/gift_pet.png",
+    }
   ],
 };
 

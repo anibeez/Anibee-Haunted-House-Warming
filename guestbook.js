@@ -41,6 +41,7 @@ const renderEntries = (entries) => {
     messageEl.textContent = entry.message;
 
     if (entry.image_url) {
+      console.log(entry.image_url)
       imageEl.src = entry.image_url;
       imageEl.alt = entry.image_alt || "Guestbook upload";
     } else {
