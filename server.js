@@ -3,9 +3,13 @@ const fs = require("fs");
 const express = require("express");
 const Database = require("better-sqlite3");
 
-const PORT = process.env.PORT || 3000;
-const API_PREFIX = "/api";
+const PORT = Number.parseInt(process.env.PORT, 10) || 3000;
+const API_PREFIX = process.env.API_PREFIX || "/api";
 const VENMO_USERNAME = process.env.VENMO_USERNAME || "Anibee-Zingalis";
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
+const DATABASE_PATH =
+  process.env.DATABASE_PATH || path.join(DATA_DIR, "haunted-housewarming.db");
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "";
 
 const DEFAULT_FUNDS = [
   {
@@ -45,11 +49,13 @@ const DEFAULT_FUNDS = [
   },
 ];
 
-const dataDir = path.join(__dirname, "data");
-fs.mkdirSync(dataDir, { recursive: true });
+fs.mkdirSync(DATA_DIR, { recursive: true });
 
-const db = new Database(path.join(dataDir, "haunted-housewarming.db"));
+const db = new Database(DATABASE_PATH);
 db.pragma("journal_mode = WAL");
+db.pragma("synchronous = NORMAL");
+db.pragma("foreign_keys = ON");
+db.pragma("busy_timeout = 5000");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS funds (
@@ -150,8 +156,26 @@ seedFunds();
 seedGallery();
 
 const app = express();
+app.disable("x-powered-by");
 app.use(express.json({ limit: "12mb" }));
 app.use(express.static(path.join(__dirname)));
+
+if (CORS_ORIGIN) {
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", CORS_ORIGIN);
+    res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") {
+      res.sendStatus(204);
+      return;
+    }
+    next();
+  });
+}
+
+app.get(`${API_PREFIX}/health`, (req, res) => {
+  res.json({ status: "ok" });
+});
 
 app.get(`${API_PREFIX}/funds`, (req, res) => {
   const funds = db.prepare("SELECT * FROM funds").all();
@@ -160,7 +184,8 @@ app.get(`${API_PREFIX}/funds`, (req, res) => {
 
 app.post(`${API_PREFIX}/pledge`, (req, res) => {
   const { fund_id: fundId, amount, name, message } = req.body;
-  if (!fundId || !amount || amount <= 0) {
+  const parsedAmount = Number(amount);
+  if (!fundId || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
     res.status(400).json({ error: "Invalid pledge." });
     return;
   }
@@ -172,12 +197,18 @@ app.post(`${API_PREFIX}/pledge`, (req, res) => {
   }
 
   db.prepare("UPDATE funds SET current = current + ? WHERE fund_id = ?").run(
-    amount,
+    parsedAmount,
     fundId
   );
   db.prepare(
     "INSERT INTO pledges (fund_id, amount, name, message, created_at) VALUES (?, ?, ?, ?, ?)"
-  ).run(fundId, amount, name || null, message || null, new Date().toISOString());
+  ).run(
+    fundId,
+    parsedAmount,
+    name || null,
+    message || null,
+    new Date().toISOString()
+  );
 
   const updatedFund = db
     .prepare("SELECT * FROM funds WHERE fund_id = ?")
@@ -185,7 +216,7 @@ app.post(`${API_PREFIX}/pledge`, (req, res) => {
 
   res.json({
     fund: updatedFund,
-    redirect_url: buildVenmoUrl(updatedFund.name, amount),
+    redirect_url: buildVenmoUrl(updatedFund.name, parsedAmount),
   });
 });
 
@@ -197,8 +228,13 @@ app.get(`${API_PREFIX}/guestbook`, (req, res) => {
 });
 
 app.post(`${API_PREFIX}/guestbook`, (req, res) => {
-  const { name, message, image_url: imageUrl, image_alt: imageAlt, created_at: createdAt } =
-    req.body;
+  const {
+    name,
+    message,
+    image_url: imageUrl,
+    image_alt: imageAlt,
+    created_at: createdAt,
+  } = req.body;
 
   if (!message) {
     res.status(400).json({ error: "Message is required." });
@@ -230,6 +266,11 @@ app.post(`${API_PREFIX}/gallery`, (req, res) => {
     return;
   }
 
+  if (tags && !Array.isArray(tags)) {
+    res.status(400).json({ error: "Tags must be an array." });
+    return;
+  }
+
   const now = new Date().toISOString();
   db.prepare(
     "INSERT INTO gallery_images (src, caption, tags, created_at) VALUES (?, ?, ?, ?)"
@@ -242,6 +283,16 @@ app.post(`${API_PREFIX}/gallery`, (req, res) => {
   res.json(images);
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Haunted housewarming server running on http://localhost:${PORT}`);
 });
+
+const shutdown = () => {
+  server.close(() => {
+    db.close();
+    process.exit(0);
+  });
+};
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
