@@ -10,6 +10,20 @@ python3 -m http.server
 
 Then open `http://localhost:8000`.
 
+## Local API server (SQLite)
+
+To persist guestbook entries, photo uploads, and gift totals, run the API server:
+
+```bash
+npm install
+npm start
+```
+
+Then open `http://localhost:3000`.
+
+If you only want the static preview, set `API_BASE_URL` to an empty string in the
+frontend scripts.
+
 ## Configuration
 
 Update the `CONFIG` object in `app.js` with:

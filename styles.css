@@ -497,6 +497,16 @@ button:hover {
   gap: 24px;
 }
 
+.gallery__upload {
+  display: grid;
+  gap: 16px;
+}
+
+.gallery__upload input,
+.gallery__upload select {
+  width: 100%;
+}
+
 .gallery__filters {
   display: flex;
   flex-wrap: wrap;
