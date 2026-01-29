@@ -1,7 +1,14 @@
-const CONFIG = {
-  API_BASE_URL: "/api",
-};
+import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/+esm";
+import { generateClient } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/api/+esm";
+import { getUrl, uploadData } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/storage/+esm";
+import outputs from "./amplify_outputs.json" assert { type: "json" };
 
+Amplify.configure(outputs);
+
+const client = generateClient();
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const GALLERY_IMAGE_PREFIX = "gallery/";
 const GALLERY_MANIFEST = "src/media/images/gallery.json";
 
 const galleryGrid = document.querySelector("#gallery-grid");
@@ -89,67 +96,85 @@ const renderGallery = () => {
   });
 };
 
-const loadGallery = async () => {
-  try {
-    if (CONFIG.API_BASE_URL) {
-      const response = await fetch(`${CONFIG.API_BASE_URL}/gallery`);
-      if (!response.ok) {
-        throw new Error("Unable to load gallery API.");
-      }
-      allImages = await response.json();
-      renderGallery();
-      return;
-    }
+const normalizeImage = async (item) => {
+  if (!item) {
+    return null;
+  }
 
+  const { url } = await getUrl({
+    path: item.imageKey,
+    options: { expiresIn: 3600 },
+  });
+
+  return {
+    id: item.id,
+    src: url.toString(),
+    caption: item.caption ?? "",
+    tags: item.tags ?? [],
+    created_at: item.submittedAt ?? item.createdAt ?? new Date().toISOString(),
+  };
+};
+
+const loadGallery = async () => {
+  let manifestImages = [];
+  try {
     const response = await fetch(GALLERY_MANIFEST);
     if (!response.ok) {
       throw new Error("Unable to load gallery manifest.");
     }
-    const data = await response.json();
-    allImages = data;
+    manifestImages = await response.json();
   } catch (error) {
-    try {
-      const response = await fetch(GALLERY_MANIFEST);
-      if (!response.ok) {
-        throw new Error("Unable to load gallery manifest.");
-      }
-      allImages = await response.json();
-    } catch (manifestError) {
-      allImages = fallbackImages;
-    }
+    manifestImages = fallbackImages;
   }
+
+  try {
+    const { data, errors } = await client.models.GalleryImage.list({
+      limit: 200,
+    });
+
+    if (errors && errors.length) {
+      throw new Error("Unable to load gallery data.");
+    }
+
+    const remoteImages = await Promise.all(data.map((item) => normalizeImage(item)));
+    const normalized = remoteImages.filter(Boolean);
+    allImages = [...normalized, ...manifestImages].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+  } catch (error) {
+    allImages = manifestImages;
+  }
+
   renderGallery();
 };
 
-const readImage = (file) =>
-  new Promise((resolve, reject) => {
-    if (!file || !file.size) {
-      resolve(null);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Unable to read image."));
-    reader.readAsDataURL(file);
+const uploadImage = async (file) => {
+  const key = `${GALLERY_IMAGE_PREFIX}${crypto.randomUUID()}-${file.name}`;
+  const task = uploadData({
+    path: key,
+    data: file,
+    options: {
+      contentType: file.type || "application/octet-stream",
+    },
   });
 
-const submitUpload = async (payload) => {
-  if (!CONFIG.API_BASE_URL) {
-    throw new Error("Uploads require the API server.");
-  }
+  const result = await task.result;
+  return result.path;
+};
 
-  const response = await fetch(`${CONFIG.API_BASE_URL}/gallery`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+const submitUpload = async ({ caption, tags, imageKey, submittedAt }) => {
+  const { data, errors } = await client.models.GalleryImage.create({
+    caption,
+    tags,
+    imageKey,
+    submittedAt,
   });
 
-  if (!response.ok) {
+  if (errors && errors.length) {
     throw new Error("Unable to upload image.");
   }
 
-  return response.json();
+  return data;
 };
 
 filterButtons.forEach((button) => {
@@ -182,21 +207,24 @@ uploadForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (imageFile.size > 5 * 1024 * 1024) {
+  if (imageFile.size > MAX_IMAGE_SIZE) {
     uploadStatus.textContent = "Please upload an image smaller than 5MB.";
     return;
   }
 
   try {
-    const src = await readImage(imageFile);
+    const imageKey = await uploadImage(imageFile);
     const tags = tag ? [tag] : [];
-    const images = await submitUpload({
-      src,
+    const submittedAt = new Date().toISOString();
+
+    await submitUpload({
       caption,
       tags,
+      imageKey,
+      submittedAt,
     });
-    allImages = images;
-    renderGallery();
+
+    await loadGallery();
     uploadForm.reset();
     uploadStatus.textContent = "Photo uploaded! Thanks for sharing.";
   } catch (error) {
