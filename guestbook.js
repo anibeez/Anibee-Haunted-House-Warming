@@ -1,7 +1,14 @@
-const CONFIG = {
-  API_BASE_URL: "/api",
-  STORAGE_KEY: "haunted-guestbook-entries",
-};
+import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/+esm";
+import { generateClient } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/api/+esm";
+import { getUrl, uploadData } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/storage/+esm";
+import outputs from "./amplify_outputs.json" assert { type: "json" };
+
+Amplify.configure(outputs);
+
+const client = generateClient();
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const GUESTBOOK_IMAGE_PREFIX = "guestbook/";
 
 const form = document.querySelector("#guestbook-form");
 const statusEl = document.querySelector("#guestbook-status");
@@ -14,13 +21,30 @@ const formatDate = (value) =>
     timeStyle: "short",
   }).format(new Date(value));
 
-const loadLocalEntries = () => {
-  const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
-};
+const normalizeEntry = async (entry) => {
+  if (!entry) {
+    return null;
+  }
 
-const saveLocalEntries = (entries) => {
-  localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(entries));
+  const imageKey = entry.imageKey ?? "";
+  let imageUrl = "";
+
+  if (imageKey) {
+    const { url } = await getUrl({
+      path: imageKey,
+      options: { expiresIn: 3600 },
+    });
+    imageUrl = url.toString();
+  }
+
+  return {
+    id: entry.id,
+    name: entry.name ?? "",
+    message: entry.message ?? "",
+    image_url: imageUrl,
+    image_alt: entry.imageAlt ?? "",
+    created_at: entry.submittedAt ?? entry.createdAt ?? new Date().toISOString(),
+  };
 };
 
 const renderEntries = (entries) => {
@@ -54,54 +78,53 @@ const renderEntries = (entries) => {
   });
 };
 
-const readImage = (file) =>
-  new Promise((resolve, reject) => {
-    if (!file || !file.size) {
-      resolve(null);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Unable to read image."));
-    reader.readAsDataURL(file);
+const fetchEntries = async () => {
+  const { data, errors } = await client.models.GuestbookEntry.list({
+    limit: 200,
   });
 
-const fetchEntries = async () => {
-  if (!CONFIG.API_BASE_URL) {
-    return loadLocalEntries();
-  }
-
-  const response = await fetch(`${CONFIG.API_BASE_URL}/guestbook`);
-  if (!response.ok) {
+  if (errors && errors.length) {
     throw new Error("Unable to fetch guestbook entries.");
   }
-  return response.json();
+
+  const normalized = await Promise.all(data.map((entry) => normalizeEntry(entry)));
+  return normalized
+    .filter(Boolean)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 };
 
-const submitEntry = async (payload) => {
-  if (CONFIG.API_BASE_URL) {
-    try {
-      const response = await fetch(`${CONFIG.API_BASE_URL}/guestbook`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error("Unable to submit guestbook entry.");
-      }
-
-      return response.json();
-    } catch (error) {
-      // Fall back to local storage when the API is unreachable.
-    }
+const uploadImage = async (file) => {
+  if (!file || !file.size) {
+    return "";
   }
 
-  const entries = loadLocalEntries();
-  const updated = [payload, ...entries];
-  saveLocalEntries(updated);
-  return updated;
+  const key = `${GUESTBOOK_IMAGE_PREFIX}${crypto.randomUUID()}-${file.name}`;
+  const task = uploadData({
+    path: key,
+    data: file,
+    options: {
+      contentType: file.type || "application/octet-stream",
+    },
+  });
+
+  const result = await task.result;
+  return result.path;
+};
+
+const submitEntry = async ({ name, message, imageKey, imageAlt, submittedAt }) => {
+  const { data, errors } = await client.models.GuestbookEntry.create({
+    name,
+    message,
+    imageKey,
+    imageAlt,
+    submittedAt,
+  });
+
+  if (errors && errors.length) {
+    throw new Error("Unable to submit guestbook entry.");
+  }
+
+  return data;
 };
 
 const initialize = async () => {
@@ -109,7 +132,9 @@ const initialize = async () => {
     const entries = await fetchEntries();
     renderEntries(entries);
   } catch (error) {
-    renderEntries(loadLocalEntries());
+    if (statusEl) {
+      statusEl.textContent = "Guestbook entries are unavailable right now.";
+    }
   }
 };
 
@@ -131,23 +156,24 @@ form?.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (hasImage && imageFile.size > 5 * 1024 * 1024) {
+  if (hasImage && imageFile.size > MAX_IMAGE_SIZE) {
     statusEl.textContent = "Please upload an image smaller than 5MB.";
     return;
   }
 
   try {
-    const imageUrl = hasImage ? await readImage(imageFile) : null;
+    const imageKey = hasImage ? await uploadImage(imageFile) : "";
+    const submittedAt = new Date().toISOString();
 
-    const payload = {
+    await submitEntry({
       name: name || "",
       message,
-      image_url: imageUrl,
-      image_alt: hasImage ? imageFile.name : "",
-      created_at: new Date().toISOString(),
-    };
+      imageKey,
+      imageAlt: hasImage ? imageFile.name : "",
+      submittedAt,
+    });
 
-    const entries = await submitEntry(payload);
+    const entries = await fetchEntries();
     renderEntries(entries);
     form.reset();
     statusEl.textContent = "Thanks for signing the guestbook!";
