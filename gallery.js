@@ -1,11 +1,8 @@
-import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/+esm";
+import { Amplify } from "https://cdn.jsdelivr.net/npm/@aws-amplify/core@6.16.0/+esm";
 import { generateClient } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/api/+esm";
 import { getUrl, uploadData } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/storage/+esm";
-import outputs from "./amplify_outputs.json" assert { type: "json" };
 
-Amplify.configure(outputs);
-
-const client = generateClient();
+let client;
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const GALLERY_IMAGE_PREFIX = "gallery/";
@@ -25,6 +22,21 @@ const fallbackImages = [];
 
 let allImages = [];
 let activeFilter = "all";
+
+const configureAmplify = async () => {
+  try {
+    const response = await fetch("./amplify_outputs.json");
+    if (!response.ok) {
+      throw new Error("Unable to load Amplify configuration.");
+    }
+    const outputs = await response.json();
+    Amplify.configure(outputs);
+    client = generateClient();
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
 
 const setActiveFilter = (filter) => {
   activeFilter = filter;
@@ -127,6 +139,12 @@ const loadGallery = async () => {
     manifestImages = fallbackImages;
   }
 
+  if (!client) {
+    allImages = manifestImages;
+    renderGallery();
+    return;
+  }
+
   try {
     const { data, errors } = await client.models.GalleryImage.list({
       limit: 200,
@@ -163,6 +181,9 @@ const uploadImage = async (file) => {
 };
 
 const submitUpload = async ({ caption, tags, imageKey, submittedAt }) => {
+  if (!client) {
+    throw new Error("Amplify is not configured.");
+  }
   const { data, errors } = await client.models.GalleryImage.create({
     caption,
     tags,
@@ -193,6 +214,11 @@ if (lightbox) {
 uploadForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!uploadForm || !uploadStatus) {
+    return;
+  }
+
+  if (!client) {
+    uploadStatus.textContent = "Uploads are unavailable right now.";
     return;
   }
 
@@ -232,4 +258,9 @@ uploadForm?.addEventListener("submit", async (event) => {
   }
 });
 
-loadGallery();
+const initialize = async () => {
+  await configureAmplify();
+  await loadGallery();
+};
+
+initialize();

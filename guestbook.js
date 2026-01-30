@@ -1,11 +1,8 @@
-import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/+esm";
+import { Amplify } from "https://cdn.jsdelivr.net/npm/@aws-amplify/core@6.16.0/+esm";
 import { generateClient } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/api/+esm";
 import { getUrl, uploadData } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/storage/+esm";
-import outputs from "./amplify_outputs.json" assert { type: "json" };
 
-Amplify.configure(outputs);
-
-const client = generateClient();
+let client;
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const GUESTBOOK_IMAGE_PREFIX = "guestbook/";
@@ -14,6 +11,24 @@ const form = document.querySelector("#guestbook-form");
 const statusEl = document.querySelector("#guestbook-status");
 const entriesContainer = document.querySelector("#guestbook-entries");
 const template = document.querySelector("#guestbook-entry-template");
+
+const configureAmplify = async () => {
+  try {
+    const response = await fetch("./amplify_outputs.json");
+    if (!response.ok) {
+      throw new Error("Unable to load Amplify configuration.");
+    }
+    const outputs = await response.json();
+    Amplify.configure(outputs);
+    client = generateClient();
+    return true;
+  } catch (error) {
+    if (statusEl) {
+      statusEl.textContent = "Guestbook entries are unavailable right now.";
+    }
+    return false;
+  }
+};
 
 const formatDate = (value) =>
   new Intl.DateTimeFormat("en-US", {
@@ -79,6 +94,9 @@ const renderEntries = (entries) => {
 };
 
 const fetchEntries = async () => {
+  if (!client) {
+    throw new Error("Amplify is not configured.");
+  }
   const { data, errors } = await client.models.GuestbookEntry.list({
     limit: 200,
   });
@@ -112,6 +130,9 @@ const uploadImage = async (file) => {
 };
 
 const submitEntry = async ({ name, message, imageKey, imageAlt, submittedAt }) => {
+  if (!client) {
+    throw new Error("Amplify is not configured.");
+  }
   const { data, errors } = await client.models.GuestbookEntry.create({
     name,
     message,
@@ -128,6 +149,11 @@ const submitEntry = async ({ name, message, imageKey, imageAlt, submittedAt }) =
 };
 
 const initialize = async () => {
+  const configured = await configureAmplify();
+  if (!configured) {
+    return;
+  }
+
   try {
     const entries = await fetchEntries();
     renderEntries(entries);
@@ -141,6 +167,11 @@ const initialize = async () => {
 form?.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!form || !statusEl) {
+    return;
+  }
+
+  if (!client) {
+    statusEl.textContent = "Guestbook entries are unavailable right now.";
     return;
   }
 
