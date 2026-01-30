@@ -1,4 +1,4 @@
-import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/+esm";
+import { Amplify } from "https://cdn.jsdelivr.net/npm/@aws-amplify/core@6.16.0/+esm";
 import { generateClient } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/api/+esm";
 import { getUrl, uploadData } from "https://cdn.jsdelivr.net/npm/aws-amplify@6.16.0/storage/+esm";
 
