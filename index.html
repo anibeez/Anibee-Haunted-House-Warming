@@ -1,139 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Anibee's Haunted Housewarming</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-slate-950 text-slate-100">
-    <main class="min-h-screen">
-      <nav class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-        <div class="text-lg font-semibold tracking-wide">Anibee's Haunted Housewarming</div>
-        <div class="flex flex-wrap gap-4 text-sm text-slate-200">
-          <a class="hover:text-white" href="index.html">Home</a>
-          <a class="hover:text-white" href="gift-registry.html">Gift Registry</a>
-          <a class="hover:text-white" href="photo-gallery.html">Photo Gallery</a>
-          <a class="hover:text-white" href="message-board.html">Guestbook</a>
-        </div>
-      </nav>
-
-      <section class="mx-auto grid w-full max-w-6xl gap-10 px-6 pb-16 pt-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <div class="space-y-6">
-          <p class="text-sm uppercase tracking-[0.3em] text-rose-300">Enter if you dare</p>
-          <h1 class="text-4xl font-semibold text-white sm:text-5xl">Anibee's Haunted Housewarming</h1>
-          <p class="text-lg text-slate-200">
-            A cozy, candy-colored housewarming with friendly ghosts, warm cider, and
-            autumn sparkle. Costumes are cute and completely optional.
-          </p>
-          <div class="flex flex-wrap gap-4">
-            <a
-              class="rounded-full bg-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/30"
-              href="gift-registry.html"
-              >Visit the gift registry</a
-            >
-            <a class="rounded-full border border-rose-300 px-6 py-3 text-sm font-semibold" href="#details"
-              >See the party details</a
-            >
-          </div>
-          <div class="overflow-hidden rounded-3xl border border-rose-400/20 bg-rose-400/5">
-            <img
-              class="h-full w-full object-cover"
-              src="src/media/images/homepage_banner.png"
-              alt="Haunted housewarming banner"
-            />
-          </div>
-        </div>
-        <div class="rounded-3xl border border-rose-400/20 bg-slate-900/60 p-6 shadow-xl">
-          <h2 class="text-xl font-semibold text-white">Party Details</h2>
-          <dl class="mt-6 space-y-4 text-sm text-slate-200">
-            <div>
-              <dt class="text-xs uppercase tracking-widest text-rose-200">Date</dt>
-              <dd class="text-base font-semibold">October 24</dd>
-            </div>
-            <div>
-              <dt class="text-xs uppercase tracking-widest text-rose-200">Time</dt>
-              <dd class="text-base font-semibold">2:00 PM</dd>
-            </div>
-            <div>
-              <dt class="text-xs uppercase tracking-widest text-rose-200">Location</dt>
-              <dd class="text-base font-semibold">545 Cedarwood Trail, Elyria, OH 44035</dd>
-            </div>
-            <div>
-              <dt class="text-xs uppercase tracking-widest text-rose-200">Theme</dt>
-              <dd class="text-base font-semibold">Cute spooky, costumes optional</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      <section id="details" class="mx-auto w-full max-w-6xl px-6 pb-16">
-        <div class="grid gap-8 lg:grid-cols-3">
-          <div class="rounded-2xl border border-rose-400/20 bg-slate-900/50 p-6">
-            <h3 class="text-lg font-semibold text-white">Arrival</h3>
-            <p class="mt-3 text-sm text-slate-200">
-              Drop in at 2 PM for cider, sweet treats, and a tour of the house.
-            </p>
-          </div>
-          <div class="rounded-2xl border border-rose-400/20 bg-slate-900/50 p-6">
-            <h3 class="text-lg font-semibold text-white">Parking</h3>
-            <p class="mt-3 text-sm text-slate-200">
-              Plenty of street parking is available along Cedarwood Trail.
-            </p>
-          </div>
-          <div class="rounded-2xl border border-rose-400/20 bg-slate-900/50 p-6">
-            <h3 class="text-lg font-semibold text-white">Dress code</h3>
-            <p class="mt-3 text-sm text-slate-200">
-              Cozy layers, playful costumes, or chic black-and-pink looks welcome.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="mx-auto w-full max-w-6xl px-6 pb-20">
-        <div class="grid gap-6 lg:grid-cols-3">
-          <a
-            class="group rounded-3xl border border-rose-400/20 bg-slate-900/50 p-6 transition hover:border-rose-400/60"
-            href="gift-registry.html"
-          >
-            <div class="flex items-center gap-4">
-              <img class="h-14 w-14" src="src/media/images/gift_registry_page_icon.png" alt="" />
-              <div>
-                <h3 class="text-lg font-semibold text-white">Gift Registry</h3>
-                <p class="text-sm text-slate-200">Support a project with a Venmo gift.</p>
-              </div>
-            </div>
-          </a>
-          <a
-            class="group rounded-3xl border border-rose-400/20 bg-slate-900/50 p-6 transition hover:border-rose-400/60"
-            href="photo-gallery.html"
-          >
-            <div class="flex items-center gap-4">
-              <img class="h-14 w-14" src="src/media/images/photo_gallery_page_icon.png" alt="" />
-              <div>
-                <h3 class="text-lg font-semibold text-white">Photo Gallery</h3>
-                <p class="text-sm text-slate-200">Share party photos with a quick link.</p>
-              </div>
-            </div>
-          </a>
-          <a
-            class="group rounded-3xl border border-rose-400/20 bg-slate-900/50 p-6 transition hover:border-rose-400/60"
-            href="message-board.html"
-          >
-            <div class="flex items-center gap-4">
-              <img class="h-14 w-14" src="src/media/images/guest_book_page_icon.png" alt="" />
-              <div>
-                <h3 class="text-lg font-semibold text-white">Guestbook</h3>
-                <p class="text-sm text-slate-200">Send a note by email or text.</p>
-              </div>
-            </div>
-          </a>
-        </div>
-      </section>
-    </main>
-
-    <footer class="border-t border-rose-400/20 py-8 text-center text-sm text-slate-300">
-      Made with pastel pumpkins, friendly ghosts, and lots of love. 🎃
-    </footer>
-  </body>
-</html>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173f2b"><meta name="description" content="The Z-Sibs family Secret Santa — six siblings, one Christmas tradition, and lots of cheer.">
+<title>Z-Sibs Secret Santa 🎄</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<header class="topbar"><a class="brand" href="#home">🎄 Z-Sibs <span>Secret Santa</span></a><nav aria-label="Main navigation"><a href="#home">Home</a><a href="#countdown">Countdown</a><a href="#wishlists">Wishlists</a><a href="#details">Exchange details</a></nav></header>
+<main id="home">
+<section class="hero">
+<div class="hero-copy"><p class="eyebrow">✦ A little family Christmas magic ✦</p><h1><span>Z-Sibs</span><br>Secret Santa</h1><p class="intro">Six siblings, one Christmas tradition, and a whole lot of holiday cheer. Find everyone’s wishes, get inspired, and get ready for our big gift exchange!</p><a class="button button-gold" href="#wishlists">🎁 Visit Santa’s Wishlist Workshop</a><p class="signoff">With love, from our family to yours ♥</p></div>
+<div class="hero-art" aria-label="Illustration of a decorated Christmas tree and presents"><div class="moon">✦</div><div class="star">✶</div><div class="tree"><span class="tree-star">★</span><span class="tree-layer layer-one"></span><span class="tree-layer layer-two"></span><span class="tree-layer layer-three"></span><span class="trunk"></span><b class="ornament o1">●</b><b class="ornament o2">●</b><b class="ornament o3">●</b><b class="ornament o4">●</b></div><div class="gift gift-a">🎁</div><div class="gift gift-b">🎁</div><div class="snowbank"></div></div>
+<div class="hero-ribbon">✦ Merry Christmas, Z-Sibs! ✦</div>
+</section>
+<section class="countdown-section" id="countdown"><p class="eyebrow">The merriest day is on its way</p><h2>Christmas Exchange Countdown</h2><div id="countdown-display" class="countdown" aria-live="polite"><div><strong id="days">--</strong><span>Days</span></div><div><strong id="hours">--</strong><span>Hours</span></div><div><strong id="minutes">--</strong><span>Minutes</span></div><div><strong id="seconds">--</strong><span>Seconds</span></div></div><p id="countdown-message" class="countdown-note">Counting down to Saturday, December 26, 2026 · Eastern Time</p></section>
+<section class="section" id="how"><div class="section-heading"><p class="eyebrow">A simple little tradition</p><h2>How Secret Santa Works</h2><p>Your assignment will arrive privately by text. The website keeps all the Christmas wishes in one cozy place.</p></div><div class="steps"><article><span>01</span><h3>Get your name</h3><p>Your Secret Santa assignment will be sent to you privately.</p></article><article><span>02</span><h3>Keep it hush-hush!</h3><p>Keep the name of the person you’re shopping for a secret.</p></article><article><span>03</span><h3>Peek at their wishes</h3><p>Find your person’s card below and browse their wishlist.</p></article><article><span>04</span><h3>Wrap with love</h3><p>Choose a thoughtful gift around $50 and bring it on December 26!</p></article></div></section>
+<section class="wish-section" id="wishlists"><div class="section-heading"><p class="eyebrow">Straight from the North Pole</p><h2>Santa’s Wishlist Workshop</h2><p>Pick your person’s name to find their Christmas wishes. The lists are public for everyone in our family.</p></div><div id="wishlist-grid" class="wishlist-grid"></div><p class="wishlist-help">No list yet? Santa’s elves are still waiting for those Christmas wishes! ✨</p></section>
+<section class="details-section" id="details"><div class="invitation"><p class="eyebrow">You’re warmly invited</p><h2>Save the Date!</h2><div class="invite-title">Z-Sibs Secret Santa</div><dl><div><dt>When</dt><dd>Saturday, December 26, 2026</dd></div><div><dt>Time</dt><dd>Christmas Morning — Exact Time TBD</dd></div><div><dt>Where</dt><dd>My House<br>545 Cedarwood Trail<br>Elyria, Ohio</dd></div></dl><div class="budget"><span>🎁 Gift budget</span><strong>$50</strong><small>Thoughtful, fun, and full of cheer</small></div><p class="invite-foot">Can’t wait to celebrate together! ♥</p></div><div class="details-side"><div class="holly">❧</div><h3>Six siblings.<br>One merry morning.</h3><p>TJ · Sarah · Kevin<br>Anna · Marie · Charles</p><a href="#wishlists" class="button">Find a wishlist ↓</a></div></section>
+</main><footer>Made with love, twinkle lights & a little Christmas nostalgia <span>🎄</span></footer><script src="wishlists.js"></script><script src="script.js"></script>
+</body></html>

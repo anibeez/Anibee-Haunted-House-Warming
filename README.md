@@ -1,19 +1,13 @@
-# Anibee-Haunted-House-Warming
+# Z-Sibs Secret Santa
 
-Website for Anibee's House Warming Party and Registry.
+A static, single-page Christmas site for six siblings. Open `index.html` directly or preview with `python3 -m http.server`. No build step, backend, database, login, or package installation is required.
 
-## Local preview
+## Update wishlists
 
-```bash
-python3 -m http.server
-```
+Open `wishlists.js`. For each sibling, paste a public URL between the quotes after `amazon:` or `other:`. Example: `amazon: "https://www.amazon.com/hz/wishlist/ls/…"`. Leave unavailable URLs as empty strings. Gift ideas can be added to `gifts` as `{ name: "Gift idea", url: "https://…", note: "Size medium" }`. Add optional text in `notes`. The cards and working buttons are generated from this one file; empty URLs never produce dead buttons.
 
-Then open `http://localhost:8000`.
+The countdown targets midnight at the start of December 26, 2026 in America/New_York. The static site stores no private Secret Santa assignments.
 
-## Updating the content
+## Hosting
 
-- **Venmo links:** Update the Venmo username or gift notes in `gift-registry.html`.
-- **Guestbook email/text:** Replace the `mailto:` and `sms:` links in `message-board.html`.
-- **Photo uploads:** Replace the shared album link (or SMS number) in `photo-gallery.html`.
-
-This site is fully static and can be hosted anywhere that serves HTML.
+This remains a plain static site and needs only the existing host to serve the repository files. No AWS configuration is required by the site. The repository contains no AWS deployment workflow or hosting configuration to validate; the external deployment arrangement was not changed.
